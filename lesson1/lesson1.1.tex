@@ -1,0 +1,204 @@
+\documentclass{book}
+
+\usepackage[utf8]{inputenc}    % For UTF-8 encoding
+\usepackage{amsmath,amssymb}   % For math symbols and environments
+\usepackage{amsthm}            % For theorem-like environments
+\usepackage{graphicx}          % For including graphics
+\usepackage{hyperref}          % For hyperlinks
+\usepackage{geometry}          % For page margins
+\geometry{margin=1in}
+
+\begin{document}
+
+\tableofcontents
+
+\chapter{Foundations of Machine Learning from a Probabilistic Perspective}
+
+Machine Learning (ML) can be broadly defined as the process by which a computational system improves its own performance or makes more accurate predictions through experience. From a probabilistic perspective, machine learning leverages the principles of probability theory to quantify the uncertainty inherent in data and models.
+
+In this chapter, we focus on the fundamental concepts of machine learning through a probabilistic lens, without delving into the details of any specific models such as linear regression, neural networks, or support vector machines. Instead, we explore the core building blocks---random variables, probability distributions, and the general paradigms used to learn from data.
+
+\section{Basic Probability Theory}
+
+\subsection{Random Variables and Distributions}
+
+A \emph{random variable} $X$ is a mathematical formalization of an uncertain quantity, mapping outcomes in a sample space $\Omega$ to real values. For instance, $X$ might represent the measured value of a physical process, or the label associated with a data point. Random variables can be:
+\begin{itemize}
+    \item \textbf{Discrete}, where $X$ takes values from a countable set (e.g., $\{0,1,2,\ldots\}$).
+    \item \textbf{Continuous}, where $X$ takes values from an uncountable set (e.g., any real number $\mathbb{R}$).
+\end{itemize}
+
+A probability distribution characterizes the likelihood of different outcomes for a random variable. In the discrete case, the distribution is specified by a probability mass function (PMF):
+\[
+P(X = x) = p(x), \quad x \in \mathcal{X},
+\]
+while in the continuous case, it is typically given by a probability density function (PDF):
+\[
+p(x) = \frac{d}{dx} P(X \le x), \quad x \in \mathbb{R}.
+\]
+
+\subsection{Joint, Marginal, and Conditional Distributions}
+
+Many machine learning problems involve multiple random variables (e.g., features $X$ and labels $Y$). We often encounter:
+\begin{itemize}
+    \item \textbf{Joint distribution} $p(x,y)$: The probability distribution over pairs $(X,Y)$.
+    \item \textbf{Marginal distribution} $p(x) = \sum_{y} p(x,y)$ (discrete) or $p(x) = \int p(x,y)\, dy$ (continuous).
+    \item \textbf{Conditional distribution} $p(y \mid x) = \frac{p(x,y)}{p(x)}$, which describes the distribution of $Y$ given $X$.
+\end{itemize}
+
+\subsection{Expectation and Moments}
+
+The \emph{expectation} (or mean) of a random variable $X$ is defined by:
+\begin{itemize}
+    \item Discrete:
+    \[
+    \mathbb{E}[X] = \sum_{x} x \, p(x),
+    \]
+    \item Continuous:
+    \[
+    \mathbb{E}[X] = \int_{-\infty}^{\infty} x \, p(x)\, dx.
+    \]
+\end{itemize}
+
+Similarly, the \emph{variance} of $X$ is:
+\[
+\mathrm{Var}(X) = \mathbb{E}[X^2] - (\mathbb{E}[X])^2.
+\]
+Higher-order moments (e.g., skewness, kurtosis) capture further properties of the distribution.
+
+\section{Probabilistic View of Learning}
+
+\subsection{The Data Generating Process}
+
+In the probabilistic setting, we assume there is a true---but typically unknown---data generating distribution $p(x, y)$. Machine learning tasks revolve around using a finite sample $\mathcal{D} = \{(x_i, y_i)\}_{i=1}^N$ drawn from $p(x, y)$ to infer properties about this distribution, such as predicting $y$ for a previously unseen $x$, or understanding the structure within $x$ itself.
+
+\subsection{Supervised, Unsupervised, and Beyond}
+
+\begin{itemize}
+    \item \textbf{Supervised learning}: We have labeled data $(x, y)$. The goal is to learn a function $f$ that maps $x$ to $y$ accurately under some measure of success.
+    \item \textbf{Unsupervised learning}: We have unlabeled data $x$. The goal is to discover patterns or structures within $x$ (e.g., clustering, density estimation, dimensionality reduction).
+    \item \textbf{Reinforcement learning}: Data arrives sequentially as an agent interacts with an environment. The agent learns a policy to maximize future rewards.
+\end{itemize}
+
+From a probabilistic perspective, each of these can be viewed as working under assumptions about the underlying data distribution, whether that distribution includes labels, has a certain latent structure, or is observed incrementally.
+
+\section{Hypothesis Spaces and Parameters}
+
+\subsection{Parametric and Non-Parametric Perspectives}
+
+\begin{enumerate}
+    \item \textbf{Parametric}: We assume a functional form $p_{\theta}(y \mid x)$ (or simply $f_{\theta}(x)$) governed by a finite set of parameters $\theta$. Learning involves estimating $\theta$ from data.
+    \item \textbf{Non-parametric}: We do not fix the functional form beforehand, allowing the model complexity to grow with the amount of data (e.g., kernel methods, some forms of nearest neighbors).
+\end{enumerate}
+
+Both can be cast in probabilistic terms, though parametric methods often lean more directly on probability distributions with explicit likelihoods.
+
+\subsection{Likelihood and Parameter Estimation}
+
+Given a parametric family $\{ p_{\theta}(x, y) \}$, the data sample $\mathcal{D}$ yields the \emph{likelihood}:
+\[
+\mathcal{L}(\theta; \mathcal{D}) = p_{\theta}(\mathcal{D}) 
+= \prod_{i=1}^N p_{\theta}(x_i, y_i),
+\]
+or in a conditional modeling framework:
+\[
+\mathcal{L}(\theta; \mathcal{D}) 
+= \prod_{i=1}^N p_{\theta}(y_i \mid x_i).
+\]
+The \emph{maximum likelihood estimate} (MLE) is the parameter $\hat{\theta}_{\mathrm{MLE}}$ that maximizes $\mathcal{L}(\theta; \mathcal{D})$ or equivalently the log-likelihood.
+
+\subsection{Bayesian Perspective}
+
+In a Bayesian framework, we treat $\theta$ itself as a random variable with a \emph{prior distribution} $p(\theta)$. The \emph{posterior distribution} is obtained via Bayes’ theorem:
+\[
+p(\theta \mid \mathcal{D}) 
+= \frac{p(\mathcal{D} \mid \theta) \, p(\theta)}{p(\mathcal{D})}
+= \frac{\mathcal{L}(\theta; \mathcal{D}) \, p(\theta)}
+{\int \mathcal{L}(\theta'; \mathcal{D}) \, p(\theta') \, d\theta'}.
+\]
+By incorporating a prior, Bayesian methods can encode domain knowledge or constraints, and they quantify uncertainty through the posterior distribution rather than a single parameter estimate.
+
+\section{Loss Functions and Risk}
+
+\subsection{Defining a Loss}
+
+A \emph{loss function} $L(y, \hat{y})$ measures the cost of predicting $\hat{y}$ when the true outcome is $y$. Common examples include:
+\begin{itemize}
+    \item Squared loss: $L(y,\hat{y}) = (y - \hat{y})^2$.
+    \item Zero-one loss: $L(y,\hat{y}) = \mathbb{I}[y \neq \hat{y}]$.
+    \item Absolute loss: $L(y,\hat{y}) = |y - \hat{y}|$.
+\end{itemize}
+
+\subsection{Expected Risk and Empirical Risk}
+
+Under a probability distribution $p(x, y)$, the \emph{expected risk} for a hypothesis $h$ (or model) is:
+\[
+R(h) = \mathbb{E}_{(x,y) \sim p} \bigl[L(y, h(x))\bigr].
+\]
+However, since $p(x, y)$ is unknown in practice, we approximate $R(h)$ using the \emph{empirical risk}:
+\[
+\hat{R}(h) = \frac{1}{N} \sum_{i=1}^N L\bigl(y_i, h(x_i)\bigr),
+\]
+based on a finite sample $\mathcal{D}$. Learning often involves finding a hypothesis $h^*$ that minimizes $\hat{R}(h)$, subject to various regularization or capacity constraints.
+
+\section{Generalization and the Role of Probability}
+
+\subsection{Overfitting and Underfitting}
+
+Because we rely on finite data, a model might \emph{overfit}, capturing noise or peculiarities in $\mathcal{D}$ that do not generalize to new data, or \emph{underfit}, failing to capture the essential structure of $\mathcal{D}$. Probabilistic arguments help us understand how to control these errors by analyzing, for example, confidence intervals, bounds on deviations of empirical means from expectations, and complexity penalties.
+
+\subsection{Law of Large Numbers and Central Limit Theorem}
+
+\begin{itemize}
+    \item \textbf{Law of Large Numbers (LLN)}: As the number of samples $N$ grows, the empirical average converges to the true expectation:
+    \[
+    \lim_{N \to \infty} \frac{1}{N} \sum_{i=1}^N X_i = \mathbb{E}[X].
+    \]
+    \item \textbf{Central Limit Theorem (CLT)}: Under mild conditions, the distribution of the sample mean around the true mean converges to a normal distribution for large $N$. This theorem is fundamental for constructing confidence intervals and quantifying uncertainty.
+\end{itemize}
+
+Such probabilistic results give us insight into how well the empirical risk approximates the true risk and how sample size influences reliability of our estimates.
+
+\section{Learning Frameworks and Beyond}
+
+\subsection{Frequentist vs.\ Bayesian Interpretations}
+
+\begin{itemize}
+    \item \textbf{Frequentist interpretation}: Parameters are fixed but unknown quantities, and variability arises from different possible samples of data.
+    \item \textbf{Bayesian interpretation}: Parameters themselves have a distribution, capturing prior knowledge and uncertainty.
+\end{itemize}
+
+Both interpretations find their place in machine learning and can often be complementary.
+
+\subsection{PAC Learning}
+
+In the Probably Approximately Correct (PAC) framework, a learner aims to find a hypothesis $h$ such that with high probability (over the choice of the training set), $h$ has a low generalization error. Formally, for any $\epsilon > 0$ and $\delta > 0$, with probability at least $1 - \delta$, the hypothesis $h$ satisfies $R(h) \le \epsilon$. The framework provides bounds on the number of samples needed for such guarantees.
+
+\section{Conclusion}
+
+In this chapter, we examined the fundamentals of machine learning from a purely probabilistic standpoint, introducing the core principles of probability theory, likelihood-based approaches, Bayesian inference, and the idea of measuring success through loss and risk. We did not focus on any particular model; rather, we underscored the overarching concepts that shape a wide range of learning algorithms. Understanding the probabilistic foundation is crucial for:
+\begin{itemize}
+    \item Designing new models that capture the uncertainties of real-world data.
+    \item Interpreting the behavior of algorithms as more data becomes available.
+    \item Balancing model complexity with the risk of overfitting.
+\end{itemize}
+
+These ideas form the basis upon which nearly all modern machine learning methods are built. By grounding learning in probability theory, we gain a principled way to handle uncertainty, optimize performance metrics, and assess how well a hypothesis will generalize beyond the observed data.
+
+\subsection*{Further Reading}
+\begin{itemize}
+    \item \textit{The Elements of Statistical Learning} by Hastie, Tibshirani, and Friedman.
+    \item \textit{Pattern Recognition and Machine Learning} by Christopher M.\ Bishop.
+    \item \textit{Machine Learning: A Probabilistic Perspective} by Kevin P.\ Murphy.
+\end{itemize}
+
+\subsection*{Key Takeaways}
+\begin{enumerate}
+    \item Probability theory provides the language to describe uncertainty in data and model parameters.
+    \item Learning can be seen as a process of fitting a model $p_{\theta}(y \mid x)$ or estimating a function $f_{\theta}(x)$ to minimize some form of expected risk.
+    \item Bayesian methods incorporate prior knowledge and produce posterior distributions over model parameters.
+    \item Generalization is at the heart of machine learning, and probabilistic tools guide how to build models that generalize well.
+\end{enumerate}
+
+\end{document}
+

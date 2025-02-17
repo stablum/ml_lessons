@@ -1,0 +1,261 @@
+\documentclass{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb}
+
+\usetheme{Madrid}        % You can change the theme
+\usecolortheme{default}  % You can change the color theme
+
+\title{Mean Squared Error (MSE) Tutorial}
+\author{}
+\date{\today}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Title Slide
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Frame: MSE Formula
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Formula}
+\[
+J_{\text{MSE}} = \frac{1}{n} \sum_{i=1}^{n} \bigl(y_i - \hat{y}_i\bigr)^2
+\]
+
+\begin{itemize}
+  \item \(y_i\) are the true target values
+  \item \(\hat{y}_i\) are the predicted values
+  \item \(n\) is the number of observations
+  \item \(J_{\text{MSE}}\) denotes the MSE-based loss function (here we use \(J\) to represent any loss/cost function)
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Frame: Best for
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Best for}
+\begin{itemize}
+  \item \textbf{Penalizing large errors heavily:} Squaring the differences means that larger errors have a disproportionately higher impact on the overall cost.
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Frame: Characteristics
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Characteristics}
+\begin{itemize}
+  \item \textbf{Differentiable and easy to compute:} The MSE-based cost function is smooth and lends itself well to gradient-based optimization.
+  \item \textbf{Sensitive to outliers:} Squaring amplifies large errors, making the metric more sensitive to outliers.
+  \item \textbf{Encourages predictions close to the mean:} Especially when the target distribution is unimodal, the MSE criterion drives predictions toward the mean of the targets.
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Frame: Interpretations - Gaussian Distribution
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Gaussian Distribution}
+\textbf{PDF of a Gaussian (Normal) distribution with mean \(\mu\) and variance \(\sigma^2\) for a variable \(x\):}
+\[
+\mathcal{L}(x; \mu, \sigma^2) = \frac{1}{\sqrt{2\pi\sigma^2}} 
+\exp\!\Biggl( -\frac{(x - \mu)^2}{2\sigma^2} \Biggr),
+\]
+where we use \(\mathcal{L}\) to indicate the likelihood function.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Frame: Probabilistic Perspective (Derivation)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Probabilistic Perspective (Derivation)}
+Assuming the prediction errors follow a Gaussian distribution with mean 0 and variance \(\sigma^2\), 
+the likelihood \(\mathcal{L}\) for a single observation \(y_i\) given the predicted value \(\hat{y}_i\) is:
+
+\[
+\mathcal{L}(y_i \mid \hat{y}_i) = 
+\frac{1}{\sqrt{2\pi\sigma^2}} 
+\exp\Bigl( -\frac{(y_i - \hat{y}_i)^2}{2\sigma^2} \Bigr).
+\]
+
+\textbf{Steps:}
+\begin{enumerate}
+\item \(\displaystyle 
+\log \mathcal{L}(y_i \mid \hat{y}_i) = 
+\log\Bigl(\frac{1}{\sqrt{2\pi\sigma^2}}\Bigr) + 
+\log\Bigl(\exp\Bigl( -\tfrac{(y_i - \hat{y}_i)^2}{2\sigma^2}\Bigr)\Bigr)\)
+
+\item \(\displaystyle 
+\log \mathcal{L}(y_i \mid \hat{y}_i) = 
+-\frac{1}{2}\log(2\pi\sigma^2) 
+-\frac{(y_i - \hat{y}_i)^2}{2\sigma^2}\)
+
+\item \(\displaystyle 
+J_i = -\log \mathcal{L}(y_i \mid \hat{y}_i) = 
+\frac{(y_i - \hat{y}_i)^2}{2\sigma^2} + 
+\frac{1}{2}\log(2\pi\sigma^2)\)
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Frame: Single-Point vs. Full Likelihood
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Single-Point vs. Full Likelihood}
+\begin{itemize}
+  \item Usually, \textbf{likelihood} refers to the joint function of \emph{all} data points.
+  \item However, each individual term in the product (or sum in log space) is often called the likelihood contribution of a single observation.
+  \item We can thus show the negative log-likelihood derivation \emph{per data point}, then combine them for the full dataset.
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Frame: Negative Log-Likelihood for the Entire Dataset
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Negative Log-Likelihood for the Entire Dataset}
+For \(n\) independent observations, the joint likelihood is the product of individual likelihoods:
+\[
+J_{\text{NLL}} = -\log \mathcal{L}\bigl(\{y_i\}\mid\{\hat{y}_i\}\bigr) 
+= \sum_{i=1}^{n} \Bigl[\frac{(y_i - \hat{y}_i)^2}{2\sigma^2} 
++ \frac{1}{2} \log (2 \pi \sigma^2)\Bigr].
+\]
+
+Ignoring the constant term \(\tfrac{1}{2} n \log (2\pi\sigma^2)\) gives:
+\[
+J_{\text{NLL}} = \frac{1}{2\sigma^2} \sum_{i=1}^n (y_i - \hat{y}_i)^2 
+\quad + \text{(const.)}.
+\]
+\textbf{Minimizing this w.r.t. \(\hat{y}_i\) \(\Longrightarrow\) Minimizing MSE.}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Frame: Geometric Perspective (Derivation)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Geometric Perspective (Derivation)}
+\[
+\| y - \hat{y} \|_2^2 = \sum_{i=1}^{n} (y_i - \hat{y}_i)^2.
+\]
+
+\begin{itemize}
+  \item The MSE corresponds to squared Euclidean (L2) distance.
+  \item Minimizing \(\| y - \hat{y} \|_2^2\) means finding the point \(\hat{y}\) closest to the actual target \(y\).
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Frame: Connection to Linear Regression
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Connection to Linear Regression}
+\begin{itemize}
+  \item MSE is the standard cost function in \textbf{Ordinary Least Squares (OLS)} regression.
+  \item Linear model: \( y = X\beta + \varepsilon \) 
+    where \(X\) is the design matrix, \(\beta\) is the parameter vector, and \(\varepsilon\) is noise.
+  \item Minimizing 
+    \(\displaystyle J_{\text{MSE}}(\beta) = \sum_{i=1}^{n} (y_i - X_i \beta)^2\)
+    leads to the OLS estimate.
+  \item Closed-form solution (assuming invertibility): 
+    \(\displaystyle \hat{\beta} = (X^T X)^{-1} X^T y.\)
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Frame: Detailed Derivation of OLS Solution (Matrix)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Detailed Derivation of the OLS Solution}
+\textbf{1. Cost function:}
+\[
+J_{\text{MSE}}(\beta) = \sum_{i=1}^n \bigl(y_i - X_i \beta\bigr)^2,
+\]
+in matrix form:
+\[
+J_{\text{MSE}}(\beta) = (y - X\beta)^T (y - X\beta).
+\]
+
+\textbf{2. Take the gradient w.r.t. \(\beta\):}
+\[
+(y - X\beta)^T (y - X\beta) 
+= y^T y - 2\,y^T X\beta + \beta^T X^T X\beta.
+\]
+\[
+\nabla_{\beta} J_{\text{MSE}}(\beta) 
+= -2 X^T y + 2 X^T X\beta.
+\]
+
+\textbf{3. Set the gradient to zero (Normal Equations):}
+\[
+X^T X \hat{\beta} = X^T y.
+\]
+
+\textbf{4. Solve for \(\hat{\beta}\):}
+\[
+\hat{\beta} = (X^T X)^{-1} X^T y.
+\]
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Frame: Summation-Based Derivation (Without Matrix Algebra)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Summation-Based Derivation (Without Matrix Algebra)}
+\textbf{Model:}
+\[
+\hat{y}_i = \beta_0 + \sum_{j=1}^d \beta_j \, x_{ij}.
+\]
+
+\textbf{MSE cost:}
+\[
+J_{\text{MSE}}(\beta_0, \beta_1, \dots, \beta_d) 
+= \sum_{i=1}^n \bigl(y_i - \hat{y}_i\bigr)^2
+= \sum_{i=1}^n 
+\Bigl(y_i - \beta_0 - \sum_{j=1}^d \beta_j x_{ij}\Bigr)^2.
+\]
+
+\textbf{Partial derivatives:}
+\[
+\frac{\partial J_{\text{MSE}}}{\partial \beta_0} = 
+\sum_{i=1}^n -2\Bigl(y_i - \beta_0 
+- \sum_{j=1}^d \beta_j x_{ij}\Bigr) = 0,
+\]
+\[
+\frac{\partial J_{\text{MSE}}}{\partial \beta_k} = 
+\sum_{i=1}^n -2\Bigl(y_i - \beta_0 
+- \sum_{j=1}^d \beta_j x_{ij}\Bigr)\, x_{ik} = 0\quad (k \ge 1).
+\]
+
+\textbf{Solve the resulting \((d+1)\)-equation system:} 
+equivalent to the Normal Equation solution.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Frame: Gradient-Based Optimization
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Gradient-Based Optimization}
+\[
+\frac{\partial J_{\text{MSE}}}{\partial \hat{y}_i} 
+= \frac{2}{n} (\hat{y}_i - y_i).
+\]
+
+\begin{itemize}
+  \item Because \(J_{\text{MSE}}\) is smooth and differentiable, 
+        it's well-suited for gradient-based methods.
+  \item In parametric models (e.g., neural networks), 
+        apply the chain rule to backprop through parameters.
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Frame: Relationship to R^2
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Relationship to \(\boldsymbol{R^2}\)}
+\[
+R^2 = 1 - \frac{\sum_{i=1}^{n} (y_i - \hat{y}_i)^2}
+{\sum_{i=1}^{n} (y_i - \bar{y})^2}.
+\]
+
+\begin{itemize}
+  \item Reducing \(\sum_{i=1}^{n} (y_i - \hat{y}_i)^2\) increases \(R^2\).
+  \item A higher \(R^2\) indicates a better fit of the model to the data.
+\end{itemize}
+\end{frame}
+
+\end{document}
+
