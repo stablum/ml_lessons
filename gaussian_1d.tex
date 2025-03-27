@@ -1,0 +1,50 @@
+\documentclass{standalone}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+\usepackage{amsmath}
+
+\begin{document}
+\begin{tikzpicture}
+  % Internal numeric placeholders for computation only.
+  % These values do not appear in the printed labels.
+  \pgfmathsetmacro{\muenum}{0}    % numerical value for µ (placeholder)
+  \pgfmathsetmacro{\sigsqnum}{1}   % numerical value for s² (placeholder)
+  
+  \begin{axis}[
+    xtick=\empty,      % Remove numeric ticks on x-axis
+    ytick=\empty,      % Remove numeric ticks on y-axis
+    axis lines=middle,
+    xlabel={$x$},
+    ylabel={$f(x)$},
+    domain=\muenum-3:\muenum+3,
+    ymin=0, ymax=0.5,
+    samples=201,
+    every axis plot/.append style={thick},
+    clip=false         % Allow nodes to be placed outside the axis box
+  ]
+    % Plot the Gaussian PDF using the numeric placeholders:
+    % f(x)=1/sqrt(2ps²)*exp( - (x-µ)²/(2s²) )
+    \addplot[blue] {1/sqrt(2*pi*\sigsqnum)*exp(-((x-\muenum)^2)/(2*\sigsqnum))};
+    
+    % Draw dashed vertical lines at x=µ, x=µ-s², and x=µ+s².
+    \draw[dashed] (axis cs:\muenum,0)
+      -- (axis cs:\muenum, {1/sqrt(2*pi*\sigsqnum)});
+    \draw[dashed] (axis cs:{\muenum-\sigsqnum},0)
+      -- (axis cs:{\muenum-\sigsqnum}, {1/sqrt(2*pi*\sigsqnum)*exp(-((\sigsqnum)^2)/(2*\sigsqnum))});
+    \draw[dashed] (axis cs:{\muenum+\sigsqnum},0)
+      -- (axis cs:{\muenum+\sigsqnum}, {1/sqrt(2*pi*\sigsqnum)*exp(-((\sigsqnum)^2)/(2*\sigsqnum))});
+      
+    % Label the vertical lines with generic symbolic names.
+    \node[below] at (axis cs:\muenum,0)         {$\mu$};
+    \node[below] at (axis cs:{\muenum-\sigsqnum},0)  {$\mu-\sigma^2$};
+    \node[below] at (axis cs:{\muenum+\sigsqnum},0)  {$\mu+\sigma^2$};
+    
+    % Place the generic PDF formula in the top-right, away from the vertical lines.
+    \node[anchor=north west] at (rel axis cs:1.05,0.9) {
+      $\displaystyle f(x)=\frac{1}{\sqrt{2\pi\,\sigma^2}}
+      \exp\!\Bigl(-\frac{(x-\mu)^2}{2\,\sigma^2}\Bigr)$
+    };
+  \end{axis}
+\end{tikzpicture}
+\end{document}
+

@@ -1,0 +1,275 @@
+\documentclass{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+
+\title{Understanding Mean Squared Error: A Non-Technical Approach}
+\author{}
+\date{\today}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Title Slide
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Frame: Introduction
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{What Is Mean Squared Error?}
+  \begin{itemize}
+    \item Mean Squared Error (MSE) is a way to measure how well predictions match reality
+    \item Think of it as a "wrongness score" - the higher the score, the worse the predictions
+    \item It's one of the most common ways to evaluate prediction models in data science
+    \item Today, we'll understand what it means and why it matters - without complex math!
+  \end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Frame: Real-World Analogy
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{A Real-World Analogy}
+  Imagine you're an archer shooting at a target:
+  \begin{itemize}
+    \item Each arrow represents a prediction
+    \item The bullseye represents the true value you're trying to predict
+    \item MSE measures how far your arrows land from the bullseye
+    \item The farther away your arrows land, the higher your error score
+    \item But MSE doesn't just measure distance - it emphasizes big misses
+  \end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Frame: How It Works - Simply
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{How MSE Works - Simply Explained}
+  \begin{enumerate}
+    \item Calculate how far each prediction is from the actual value
+    \item Square each of these differences (multiply it by itself)
+    \item Find the average of all these squared differences
+  \end{enumerate}
+  
+  \vspace{0.5cm}
+  That's it! The final number is your MSE score.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Frame: Why Square the Errors?
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Why Square the Errors?}
+  When we square the differences between predictions and actual values:
+  
+  \begin{itemize}
+    \item All errors become positive (no negatives canceling out positives)
+    \item Larger errors are penalized much more heavily
+  \end{itemize}
+  
+  \vspace{0.5cm}
+  Example: Which is worse?
+  \begin{itemize}
+    \item Making 10 predictions that are each off by 1 unit
+    \item Making 9 perfect predictions but 1 prediction that's off by 10 units
+  \end{itemize}
+  
+  With MSE, the second case is considered worse! A single big mistake counts more than many small ones.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Frame: Example - Weather Forecasting
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Example: Weather Forecasting}
+  Imagine predicting temperatures for a week:
+  
+  \begin{tabular}{lcc}
+    \hline
+    Day & Actual Temp (°F) & Predicted Temp (°F) \\
+    \hline
+    Monday & 75 & 73 \\
+    Tuesday & 78 & 80 \\
+    Wednesday & 82 & 79 \\
+    Thursday & 79 & 77 \\
+    Friday & 77 & 82 \\
+    \hline
+  \end{tabular}
+  
+  \vspace{0.5cm}
+  The MSE would tell us how accurate our weather model is, with higher penalties for days when we were way off.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Frame: When MSE Shines
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{When MSE Shines}
+  MSE works especially well when:
+  
+  \begin{itemize}
+    \item Big errors are particularly problematic
+    \item Your data doesn't have many extreme outliers
+    \item The consequences of errors grow with their size
+  \end{itemize}
+  
+  \vspace{0.5cm}
+  
+  Real-world examples:
+  \begin{itemize}
+    \item Predicting house prices (a $50K error is much worse than five $10K errors)
+    \item Estimating delivery times (being 5 hours late is worse than being 1 hour late on 5 deliveries)
+    \item Financial forecasting (where large prediction errors could be very costly)
+  \end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Frame: The Outlier Problem
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{The Outlier Problem}
+  MSE's sensitivity to large errors has a downside:
+  
+  \begin{itemize}
+    \item A single extreme outlier can dominate the entire error score
+    \item This might make an otherwise good model look terrible
+    \item Example: A house price prediction model performs well on 99% of houses but is way off on one mansion
+  \end{itemize}
+  
+  \vspace{0.5cm}
+  
+  This is why data scientists sometimes use alternatives like Mean Absolute Error when outliers are a concern.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Frame: Driving Toward the Middle
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Driving Toward the Middle}
+  An interesting property of MSE:
+  
+  \begin{itemize}
+    \item If you had to make the same prediction for everything, what would you choose?
+    \item With MSE, the best single prediction is the average of all actual values
+  \end{itemize}
+  
+  \vspace{0.5cm}
+  
+  Example: If you had to guess everyone's age in a room with one number:
+  \begin{itemize}
+    \item Using MSE, the average age would be your best bet
+    \item This explains why basic prediction models often start with averages
+  \end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Frame: Connection to Linear Regression
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Connection to Linear Regression}
+  Linear regression (finding the "best fit line") is directly tied to MSE:
+  
+  \begin{itemize}
+    \item When we say "best fit line," we mean the line that minimizes the MSE
+    \item The regression line is positioned to make the squared vertical distances as small as possible
+    \item This is why it's called "least squares" regression
+  \end{itemize}
+  
+  \vspace{0.5cm}
+  
+  In essence, the familiar best-fit line you see through scattered points is simply the line that minimizes the MSE!
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Frame: The Normal Distribution Connection
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Behind the Scenes: The Bell Curve Connection}
+  There's a deeper reason why MSE is so common:
+  
+  \begin{itemize}
+    \item It assumes errors follow a "bell curve" (normal distribution)
+    \item Many natural phenomena do follow bell curves
+    \item Examples: Heights of people, measurement errors, natural variations in many biological processes
+  \end{itemize}
+  
+  \vspace{0.5cm}
+  
+  When data naturally varies according to a bell curve, MSE is theoretically the most efficient way to measure error!
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Frame: How Good Is My Model?
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{How Good Is My Model?}
+  MSE helps answer this question, but with a twist:
+  
+  \begin{itemize}
+    \item A related measure called R-squared tells what percentage of variation your model explains
+    \item R-squared of 0.75 means your model explains 75\% of the variation in the data
+    \item The closer to 1 (or 100\%), the better your model fits the data
+  \end{itemize}
+  
+  \vspace{0.5cm}
+  
+  This gives a more intuitive sense of model quality than raw MSE numbers.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Frame: Practical Applications
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Practical Applications}
+  MSE is used in countless real-world scenarios:
+  
+  \begin{itemize}
+    \item Stock price prediction (financial services)
+    \item Energy consumption forecasting (utilities)
+    \item Inventory management (retail)
+    \item Patient outcome prediction (healthcare)
+    \item Traffic flow prediction (transportation)
+    \item Image and video compression (technology)
+  \end{itemize}
+  
+  Essentially, whenever we need a model to make numerical predictions, MSE is likely in the picture!
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Frame: When NOT to Use MSE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{When NOT to Use MSE}
+  MSE isn't always the right choice:
+  
+  \begin{itemize}
+    \item When you're predicting categories (like "spam" vs "not spam"), not numbers
+    \item When all errors should be treated equally (a small miss is as bad as a large one)
+    \item When your data has many extreme outliers
+    \item When the units of your prediction are important to interpret (MSE units are squared!)
+  \end{itemize}
+  
+  In these cases, other error measures may be more appropriate.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Frame: Takeaways
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Key Takeaways}
+  Remember these main points about MSE:
+  
+  \begin{itemize}
+    \item It measures prediction error by averaging squared differences
+    \item It penalizes large errors much more than small ones
+    \item It's the foundation of many common statistical methods
+    \item It works best when errors naturally follow a bell curve
+    \item It's just one of many possible error measures - choose the right tool for your needs
+  \end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Frame: Questions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Questions?}
+  \centering
+  \huge Thank you for your attention!
+  
+  \vspace{1cm}
+  
+  \large Any questions?
+\end{frame}
+
+\end{document}
