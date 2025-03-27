@@ -200,6 +200,36 @@
   \end{block}
 \end{frame}
 
+\begin{frame}{Derivation of Marginal Distributions: Bivariate Case}
+  \begin{block}{Marginalizing $X_2$}
+    To derive the marginal distribution of $X_1$, we integrate over $X_2$:
+    \begin{align*}
+      f_{X_1}(x_1) &= \int_{-\infty}^{\infty} f_{X_1,X_2}(x_1, x_2) \, dx_2\\
+      &= \int_{-\infty}^{\infty} \frac{1}{2\pi \sqrt{|\boldsymbol{\Sigma}|}} \exp\left(-\frac{1}{2}(\mathbf{x}-\boldsymbol{\mu})^T \boldsymbol{\Sigma}^{-1} (\mathbf{x}-\boldsymbol{\mu})\right) \, dx_2
+    \end{align*}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Derivation of Marginal Distributions: Key Steps}
+  \begin{block}{Quadratic Form in the Exponent}
+    For a bivariate Gaussian, the exponent can be written as:
+    \begin{align*}
+      &-\frac{1}{2} \left[ \frac{(x_1-\mu_1)^2}{\sigma_1^2(1-\rho^2)} - \frac{2\rho(x_1-\mu_1)(x_2-\mu_2)}{\sigma_1\sigma_2(1-\rho^2)} + \frac{(x_2-\mu_2)^2}{\sigma_2^2(1-\rho^2)} \right]
+    \end{align*}
+    
+    Where $\rho = \frac{\sigma_{12}}{\sigma_1\sigma_2}$ is the correlation coefficient.
+  \end{block}
+  
+  \begin{block}{Completing the Square in $x_2$}
+    Group terms with $x_2$, complete the square, and integrate the resulting Gaussian form:
+    \begin{align*}
+      \int_{-\infty}^{\infty} \exp\left(-\frac{1}{2a}(x_2-b)^2\right) \, dx_2 = \sqrt{2\pi a}
+    \end{align*}
+    
+    The result is a Gaussian distribution: $X_1 \sim \mathcal{N}(\mu_1, \sigma_1^2)$
+  \end{block}
+\end{frame}
+
 \begin{frame}{Conditional Distributions}
   \begin{block}{Proposition}
     Let $\mathbf{X} = (\mathbf{X}_1, \mathbf{X}_2)^T \sim \mathcal{N}(\boldsymbol{\mu}, \boldsymbol{\Sigma})$ with:
