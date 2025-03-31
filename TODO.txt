@@ -1,0 +1,22 @@
+topics to explore
+-----------------
+
+[X] gaussian distribution - importance in nature and why in machine learning
+[X] marginal gaussian distribution
+[ ] logistic regression and how it relates to linear regression
+[ ] calculation of the maximum probability value in a gaussian
+[X] bias and variance in machine learning
+[ ] generative process vs model
+[ ] more samples -> more accurate model
+[ ] difference mean mode median
+[ ] modal income vs median income
+[ ] central limit theorem
+[ ] more data -> model parameter that's nearer to the one of the generative process
+[ ] example of 1d generative process of gaussian and difference between generative process and model as the sample size gets larger
+
+technicalities
+[ ] make github repo
+[ ] Assignment:
+	[ ] part 1: make a sampling algorithm from a bowl of marbles that have different colors and different counts
+	[ ] part 2: explain why you can write a sampling algorithm without the need of normalization (sum to 1)
+	[ ] part 3: apply this to a discretization of the domain of a normal distribution to have an approximation of the sampling to a normal distribution
